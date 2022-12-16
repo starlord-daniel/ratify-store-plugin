@@ -61,15 +61,21 @@ From this `subjectReference` the digest is extracted and used to build the Descr
 
 ## Running/Testing
 
-To run/test the behaviour of your storage, you need to build it first. The plugin itself is not part of ratify (called out-of-tree) and therefor need to be built separately from it. To do this, run this go command from the root of the repo:
+To run/test the behaviour of your storage, you need to build it first.
+The plugin itself is not part of ratify (called out-of-tree) and therefor need to be built separately from it.
+
+To do this, run this go command from the root of the repo:
 
 ```bash
 go build
 ```
 
-To use this with ratify, you'd need to move the executable to your ratify directory, into the `ratify/.ratify/plugins` folder.
+The ratify project can be found and [cloned from GitHub](https://github.com/deislabs/ratify).
+To use this plugin with ratify, you'd need to move the executable to your ratify directory, into the `ratify/.ratify/plugins` folder.
 
->info: Currently, the data for the filesystem storage has to be copied to the `.ratify` folder. A valid structure (in the ratify repo) can look as follows:
+>info: Currently, the data for the filesystem storage has to be copied to the `.ratify` folder.
+
+A valid structure (in the [main ratify repo](https://github.com/deislabs/ratify)) can look as follows:
 
 ```bash
 .ratify/plugins/
@@ -96,7 +102,7 @@ Now you need to update the `config.json` in the `.ratify` folder to include your
     },
 ```
 
-After this is done, you can run ratify by using the debug configuration `Verify` as defined in the `.vscode/launch.json` by pressing F5 in VS Code.
+After this is done, you can run ratify by using the debug configuration `Verify` as defined in the `.vscode/launch.json` by pressing F5 in VS Code (in the ratify repo).
 
 ## Sample
 
