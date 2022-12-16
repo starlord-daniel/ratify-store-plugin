@@ -727,6 +727,8 @@ github.com/nightlyone/lockfile v1.0.0/go.mod h1:rywoIealpdNse2r832aiD9jRk8ErCatR
 github.com/nishanths/predeclared v0.0.0-20200524104333-86fad755b4d3/go.mod h1:nt3d53pc1VYcphSCIaYAJtnPYnr3Zyn8fMq2wvPGPso=
 github.com/notaryproject/notation-core-go v1.0.0-rc.1 h1:ACi0gr6mD1bzp9+gu3P0meJ/N6iWHlyM9zgtdnooNAA=
 github.com/notaryproject/notation-core-go v1.0.0-rc.1/go.mod h1:n8Gbvl9sKa00KptkKEL5XKUyMTIALe74QipKauE2rj4=
+github.com/notaryproject/notation-go v0.8.0-alpha.1 h1:YbrmzZiEdK2/XSqwkT0/qvACiJGy7AXSaMbzbQc2RmI=
+github.com/notaryproject/notation-go v0.8.0-alpha.1/go.mod h1:B/JbgikwvLoD9gFeWYhFtxIEozRoFAs9q31mj3vz1i4=
 github.com/notaryproject/notation-go v1.0.0-rc.1 h1:WobIGCUPcPUDCD2qGMCccTfLm2J5y1bsh4SFVsyMIaA=
 github.com/notaryproject/notation-go v1.0.0-rc.1/go.mod h1:xk4q0GXqGfEiy7WmyHi3Om3OM2dgHk0OHL6NIiJv5vA=
 github.com/nxadm/tail v1.4.4/go.mod h1:kenIhsEOeOJmVchQTgglprH7qJGnHDVpk1VPCcaMI8A=

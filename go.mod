@@ -18,7 +18,6 @@ require (
 	github.com/google/go-containerregistry v0.12.1
 	github.com/gorilla/mux v1.8.0
 	github.com/notaryproject/notation-core-go v1.0.0-rc.1
-	github.com/notaryproject/notation-go v1.0.0-rc.1
 	github.com/open-policy-agent/frameworks/constraint v0.0.0-20220627162905-95c012350402
 	github.com/opencontainers/go-digest v1.0.0
 	github.com/opencontainers/image-spec v1.1.0-rc2
@@ -45,6 +44,7 @@ require (
 	github.com/deislabs/ratify v1.1.0-alpha.1 // indirect
 	github.com/go-asn1-ber/asn1-ber v1.5.4 // indirect
 	github.com/go-ldap/ldap/v3 v3.4.4 // indirect
+	github.com/notaryproject/notation-go v0.8.0-alpha.1 // indirect
 )
 
 require (
