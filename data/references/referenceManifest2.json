@@ -1,0 +1,18 @@
+{
+  "mediaType": "application/vnd.cncf.oci.artifact.manifest.v1+json",
+  "artifactType": "application/vnd.ratify.spdx.v0",
+  "blobs": [
+    {
+      "mediaType": "application/jose+json",
+      "digest": "artifactContent.json",
+      "size": 250
+    }
+  ],
+  "manifests": [
+    {
+      "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+      "digest": "sha256:8fef74aa37a48e8c9e911f5ca1d10809d01660ec5a42bb3514bb75e508d0276d",
+      "size": 250
+    }
+  ]
+}

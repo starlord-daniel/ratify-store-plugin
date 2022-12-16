@@ -1,0 +1,13 @@
+bin
+dist/
+local_oras_cache/
+.idea
+__debug_bin
+
+# generated certificate directory
+certs/
+
+# symlink to ~/.ratify folder
+/.ratify
+
+.DS_Store
