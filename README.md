@@ -4,28 +4,28 @@
 
 | Term | Description |
 | ---- | ----- |
-| [Referrer Store](https://pkg.go.dev/github.com/deislabs/ratify/pkg/referrerstore#ReferrerStore) | ReferrerStore is an interface that defines methods to query the graph of supply chain content including its related content. Take a look at [the interface definition in api.go](../../../pkg/referrerstore/api.go) |
+| [Referrer Store](https://pkg.go.dev/github.com/deislabs/ratify/pkg/referrerstore#ReferrerStore) | ReferrerStore is an interface that defines methods to query the graph of supply chain content including its related content. Take a look at [the interface definition in api.go](https://github.com/deislabs/ratify/tree/main/pkg/referrerstore/api.go) |
 | [Reference Manifest](https://pkg.go.dev/github.com/deislabs/ratify/pkg/ocispecs#ReferenceManifest) | The manifest of a referrer. The referrer manifest defines the connection to a subject manifest via its digest. The digest acts as a unique id of the subject, that the referrer is storing. |
 | [Subject Reference](https://pkg.go.dev/github.com/deislabs/ratify/pkg/common#Reference) | A reference to the subject. This contains the unique digest to look for, the path for validation, a tag and a original. |
 
 ## Description
 
-This is a sample implementation of a referrer store that stores the referrer in two files on the filesystem.
+This is a sample implementation of a referrer store that stores the referrer in files on the filesystem.
 
-The job of this and any other referrer store is to provide methods defined in the [ReferrerStore interface](../../../pkg/referrerstore/api.go) that are used by referrers like [NotaryV2](../../../pkg/verifier/notaryv2/notaryv2.go) to get data to verify.
+The job of this and any other referrer store is to provide methods defined in the [ReferrerStore interface](https://github.com/deislabs/ratify/pkg/referrerstore/api.go) that are used by referrers like [NotaryV2](https://github.com/deislabs/ratify/tree/main/pkg/verifier/notaryv2/notaryv2.go) to get data to verify.
 
 The important files are:
 
-- The referrer manifests: `filesystem/references/referenceManifest1.json` and `filesystem/references/referenceManifest1.json`
-- The subject manifest: `filesystem/subjectManifest.json`
-- The content of the artifact: `filesystem/artifactContent.json`
-- The code that defines the filesystem storage: `filesystem.go`
+- The referrer manifests: `data/references/referenceManifest1.json` and `data/references/referenceManifest1.json`
+- The subject manifest: `data/subjectManifest.json`
+- The content of the artifact: `data/artifactContent.json`
+- The code that defines the filesystem storage: `main.go`
 
 ## Concept
 
-The `filesystem.go` file contains all methods, that this implementation of the referrerstore needs to provide to the calling application (a verifier).
+The `main.go` file contains all methods, that this implementation of the referrerstore needs to provide to the calling application (a verifier).
 
-These methods are defined in the [ReferrerStore interface](../../../pkg/referrerstore/api.go) and are:
+These methods are defined in the [ReferrerStore interface](https://github.com/deislabs/ratify/tree/main/pkg/referrerstore/api.go) and are:
 
 ### ListReferrers
 
@@ -73,7 +73,7 @@ go build
 The ratify project can be found and [cloned from GitHub](https://github.com/deislabs/ratify).
 To use this plugin with ratify, you'd need to move the executable to your ratify directory, into the `ratify/.ratify/plugins` folder.
 
->info: Currently, the data for the filesystem storage has to be copied to the `.ratify` folder.
+>info: Currently, the data for the filesystem storage has to be copied to the users `.ratify` folder.
 
 A valid structure (in the [main ratify repo](https://github.com/deislabs/ratify)) can look as follows:
 
@@ -84,7 +84,7 @@ A valid structure (in the [main ratify repo](https://github.com/deislabs/ratify)
     ├── references
     │   ├── referenceManifest1.json
     │   └── referenceManifest2.json
-    └── sha256:8fef74aa37a48e8c9e911f5ca1d10809d01660ec5a42bb3514bb75e508d0276d.json
+    └── manifest.json
     └── artifactContent.json
 ```
 
@@ -93,16 +93,17 @@ Now you need to update the `config.json` in the `.ratify` folder to include your
 ```json
 "store": {
     "version": "1.0.0",
-    "plugins": 
+    "plugins":
     [
         {
-            "name": "filesystem"
+            "name": "filesystem",
+            "folderPath": "<folder path /data/ folder >"
         }
     ]
     },
 ```
 
-After this is done, you can run ratify by using the debug configuration `Verify` as defined in the `.vscode/launch.json` by pressing F5 in VS Code (in the ratify repo).
+After this is done, you can run ratify by using the debug configuration `Verify` as defined in the `.vscode/launch.json` by pressing F5 in VS Code (in the ratify repo). When prompted provide the subject manifest file name e.g. `manifest.json` that resides in the folder path provided to the store plugin.
 
 ## Sample
 
