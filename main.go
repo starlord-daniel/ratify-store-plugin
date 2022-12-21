@@ -20,28 +20,23 @@ func main() {
 	skel.PluginMain("filesystem", "1.0.0", ListReferrers, GetBlobContent, GetReferenceManifest, GetSubjectDescriptor, []string{"1.0.0"})
 }
 
-// FileSystem store local subjectReference.
-var localsubjectReference = common.Reference{
-	Path:     "/home/vscode/.ratify/plugins/data/sha256:8fef74aa37a48e8c9e911f5ca1d10809d01660ec5a42bb3514bb75e508d0276d.json",
-	Digest:   "sha256:8fef74aa37a48e8c9e911f5ca1d10809d01660ec5a42bb3514bb75e508d0276d",
-	Tag:      "",
-	Original: "/home/vscode/.ratify/plugins/data/sha256:8fef74aa37a48e8c9e911f5ca1d10809d01660ec5a42bb3514bb75e508d0276d.json",
-}
-
-var localArtifactReference = common.Reference{
-	Path:     "/home/vscode/.ratify/plugins/data/references/referenceManifest1.json",
-	Digest:   "/home/vscode/.ratify/plugins/data/references/referenceManifest1.json",
-	Tag:      "",
-	Original: "/home/vscode/.ratify/plugins/data/references/referenceManifest1.json",
+type conf struct {
+	Name       string `json:"name"`
+	FolderPath string `json:"folderPath"`
 }
 
 func ListReferrers(args *skel.CmdArgs, subjectReference common.Reference, artifactTypes []string, nextToken string, subjectDesc *ocispecs.SubjectDescriptor) (*referrerstore.ListReferrersResult, error) {
 
-	subjectReference = localsubjectReference
-
+	localFileReference, err := GetSubjectDescriptor(args, subjectReference)
+	if err != nil {
+		log.Fatal(err)
+	}
 	var referrers []ocispecs.ReferenceDescriptor
 
-	directory := filepath.Dir("/home/vscode/.ratify/plugins/data/references/")
+	// ! Should be passed in as store args in ratify config.json
+	localconfig := localFileConfig(args)
+
+	directory := filepath.Join(localconfig.FolderPath, "/references/")
 
 	files, err := os.ReadDir(directory)
 	if err != nil {
@@ -58,7 +53,7 @@ func ListReferrers(args *skel.CmdArgs, subjectReference common.Reference, artifa
 
 		for _, referenceSubject := range reference.Subjects {
 
-			if subjectReference.Digest == referenceSubject.Digest {
+			if localFileReference.Digest == referenceSubject.Digest {
 				logrus.Info("Found reference: ", referenceFile.Name())
 				referrers = append(referrers, ocispecs.ReferenceDescriptor{
 					ArtifactType: reference.ArtifactType,
@@ -97,6 +92,18 @@ func handleJSONFiles(filePath string) ocispecs.ReferenceManifest {
 	return fileContent
 }
 
+func localFileConfig(args *skel.CmdArgs) *conf {
+	// already validated before this point, thank you skel.
+	var config conf
+	json.Unmarshal(args.StdinData, &config)
+	// verify the filepath was provided.
+	if config.FolderPath == "" {
+		log.Fatalf("missing folderPath value in config.json for the filesystem store")
+	}
+	return &config
+}
+
+// called from verifier to retrieve referrer content
 func GetBlobContent(args *skel.CmdArgs, subjectReference common.Reference, digest digest.Digest) ([]byte, error) {
 
 	artifactPath := subjectReference.Digest.String()
@@ -116,22 +123,41 @@ func GetBlobContent(args *skel.CmdArgs, subjectReference common.Reference, diges
 
 func GetSubjectDescriptor(args *skel.CmdArgs, subjectReference common.Reference) (*ocispecs.SubjectDescriptor, error) {
 
-	subjectReference = localsubjectReference
+	localConfig := localFileConfig(args)
 
-	dig := subjectReference.Digest
+	path := filepath.Join(localConfig.FolderPath, subjectReference.Original)
 
-	if dig == "" {
-		dig = digest.FromString(subjectReference.Tag)
+	file, err := os.ReadFile(path)
+
+	if err != nil {
+		logrus.Fatal(err, "Manifest File Read Error")
 	}
 
-	return &ocispecs.SubjectDescriptor{Descriptor: v1.Descriptor{Digest: dig}}, nil
+	type subjectConfig struct {
+		MediaType string
+		Size      int
+		Digest    digest.Digest // this really should be a string, I think.
+	}
+
+	type SubjectManifest struct {
+		MediaType string          `json:"mediaType"`
+		Config    subjectConfig   `json:"config"`
+		Layers    []subjectConfig `json:"layers"`
+	}
+
+	var fileContent SubjectManifest
+	err = json.Unmarshal(file, &fileContent)
+	if err != nil {
+		logrus.Fatal(err, "Manifest File Content Error")
+	}
+
+	return &ocispecs.SubjectDescriptor{Descriptor: v1.Descriptor{Digest: fileContent.Config.Digest}}, nil
 }
 
 func GetReferenceManifest(args *skel.CmdArgs, subjectReference common.Reference, digest digest.Digest) (ocispecs.ReferenceManifest, error) {
 
-	subjectReference = localArtifactReference
-
-	directory := filepath.Dir("/home/vscode/.ratify/plugins/filesystem_data/references/")
+	localConfig := localFileConfig(args)
+	directory := filepath.Join(localConfig.FolderPath, "/references")
 
 	files, err := os.ReadDir(directory)
 	if err != nil {
